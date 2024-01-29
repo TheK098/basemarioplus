@@ -80,7 +80,7 @@ def train(opt):
     if torch.cuda.is_available():
         curr_states = curr_states.cuda()
 
-    while True:            
+    while True:
         if ((curr_episode % opt.save_interval == 0 and curr_episode > 0) or total_reward>highest_reward):
             highest_reward=total_reward
             torch.save(model.state_dict(),
