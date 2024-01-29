@@ -32,8 +32,8 @@ def get_args():
     parser.add_argument("--save_interval", type=int, default=5, help="Number of steps between savings")
     parser.add_argument("--max_actions", type=int, default=200, help="Maximum repetition steps in test phase")
     parser.add_argument("--log_path", type=str, default="/content/sup/tensorboard/ppo_super_mario_bros")
-    parser.add_argument("--saved_path", type=str, default="/content/sup/trained_models")
-    parser.add_argument("--checkpoint", type=str, default="/content/drive/My Drive/Mario Trained Models (With GAE)/checkpoints", help="Path to a saved checkpoint (optional)")
+    parser.add_argument("--saved_path", type=str, default="/content/drive/My Drive/Mario Trained Models (With GAE)")
+    parser.add_argument("--checkpoint", type=str, default="/content/drive/My Drive/Mario Trained Models (With GAE)/checkpoints/ppo_super_mario_bros_checkpoint_155.pth", help="Path to a saved checkpoint (optional)")
 
     args = parser.parse_args()
     return args
@@ -56,6 +56,10 @@ def train(opt):
         model.cuda()
     model.share_memory()
     
+    optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
+    
+    curr_episode=0
+    highest_reward = 0
     if opt.checkpoint:
         if os.path.isfile(opt.checkpoint):
             print("=> loading checkpoint '{}'".format(opt.checkpoint))
@@ -66,22 +70,19 @@ def train(opt):
             print("=> loaded checkpoint (at episode {})".format(checkpoint['episode']))
         else:
             print("=> no checkpoint found at '{}'".format(opt.checkpoint))
-            curr_episode = 0
-    else:
-        curr_episode = 0
     
     process = mp.Process(target=eval, args=(opt, model, envs.num_states, envs.num_actions))
     process.start()
-    optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
+
     [agent_conn.send(("reset", None)) for agent_conn in envs.agent_conns]
     curr_states = [agent_conn.recv() for agent_conn in envs.agent_conns]
     curr_states = torch.from_numpy(np.concatenate(curr_states, 0))
     if torch.cuda.is_available():
         curr_states = curr_states.cuda()
-    curr_episode = 0
-    while True:
-        total_reward =0
-        if curr_episode % opt.save_interval == 0 and curr_episode > 0:
+
+    while True:            
+        if ((curr_episode % opt.save_interval == 0 and curr_episode > 0) or total_reward>highest_reward):
+            highest_reward=total_reward
             torch.save(model.state_dict(),
                        "{}/ppo_super_mario_bros_{}_{}".format(opt.saved_path, opt.world, opt.stage))
             torch.save(model.state_dict(),
@@ -96,8 +97,8 @@ def train(opt):
                 'optimizer_state_dict': optimizer.state_dict(),
                 # Include other states here if necessary
             }
-            torch.save(checkpoint, "{}/ppo_super_mario_bros_checkpoint_{}.pth".format(opt.saved_path, curr_episode))
-
+            torch.save(checkpoint, "{}/checkpoints/ppo_super_mario_bros_checkpoint_{}.pth".format(opt.saved_path, curr_episode))
+        total_reward =0
         curr_episode += 1
         old_log_policies = []
         actions = []
