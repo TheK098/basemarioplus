@@ -78,7 +78,7 @@ class CustomReward(Wrapper):
             self.eps+=1
             total_difference = np.sum(np.abs(state - self.previous_state))
             if total_difference>2600:
-                print("WAHOOO!   ")
+                print("WAHOOO!   ", self.eps)
                 reward+=20
         else:
             self.var+=1
