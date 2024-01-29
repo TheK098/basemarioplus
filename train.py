@@ -57,7 +57,7 @@ def train(opt):
     model.share_memory()
     
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
-    total_reward=0
+    
     curr_episode=0
     highest_reward = 0
     if opt.checkpoint:
@@ -170,7 +170,7 @@ def train(opt):
                 total_loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
                 optimizer.step()
-        print("Episode: {}. Total reward: {}. Total loss: {}".format(curr_episode, total_reward, total_loss.item()))
+        print("Episode: {}. Total reward: {}. Total loss: {}. Highest reward: {}".format(curr_episode, total_reward, total_loss.item(), highest_reward))
 
 
 if __name__ == "__main__":
