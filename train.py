@@ -57,7 +57,7 @@ def train(opt):
     model.share_memory()
     
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
-    
+    total_reward=0
     curr_episode=0
     highest_reward = 0
     if opt.checkpoint:

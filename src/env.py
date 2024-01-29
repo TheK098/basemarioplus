@@ -51,6 +51,7 @@ class CustomReward(Wrapper):
         # delete later
         self.previous_state = None
         self.var = 0
+        self.step=0
         
         if monitor:
             self.monitor = monitor
@@ -60,6 +61,7 @@ class CustomReward(Wrapper):
     def step(self, action):
         # delete start
         if (self.previous_state is None) and self.var==0:
+            self.step+=1
             self.previous_state = self.env.render(mode='rgb_array')
             self.previous_state = process_frame(self.previous_state)
             self.var+=1        
@@ -72,9 +74,10 @@ class CustomReward(Wrapper):
         
         # delete start
         if self.previous_state is not None and self.var==2:
+            self.step+=1
             total_difference = np.sum(np.abs(state - self.previous_state))
-            if total_difference>2500:
-                print("WAHOOO!")
+            if total_difference>2600:
+                print("WAHOOO!   ", self.step)
                 reward+=20
         else:
             self.var+=1
