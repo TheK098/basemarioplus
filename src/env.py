@@ -142,6 +142,7 @@ class MultipleEnvironments:
         elif action_type == "complex":
             actions = COMPLEX_MOVEMENT
         else:
+            print("speeeeedrun checcck env.py")
             actions = SPEEDRUN_MOVEMENT
         self.envs = [create_train_env(world, stage, actions, output_path=output_path) for _ in range(num_envs)]
         self.num_states = self.envs[0].observation_space.shape[0]

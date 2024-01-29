@@ -18,7 +18,7 @@ def get_args():
         """Implementation of model described in the paper: Proximal Policy Optimization Algorithms for Super Mario Bros""")
     parser.add_argument("--world", type=int, default=1)
     parser.add_argument("--stage", type=int, default=1)
-    parser.add_argument("--action_type", type=str, default="simple")
+    parser.add_argument("--action_type", type=str, default="speeedrun")
     parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--gamma', type=float, default=0.9, help='discount factor for rewards')
     parser.add_argument('--tau', type=float, default=1.0, help='parameter for GAE')
@@ -83,10 +83,6 @@ def train(opt):
     while True:            
         if ((curr_episode % opt.save_interval == 0 and curr_episode > 0) or total_reward>highest_reward):
             highest_reward=total_reward
-            torch.save(model.state_dict(),
-                       "{}/ppo_super_mario_bros_{}_{}".format(opt.saved_path, opt.world, opt.stage))
-            torch.save(model.state_dict(),
-                       "{}/ppo_super_mario_bros_{}_{}_{}".format(opt.saved_path, opt.world, opt.stage, curr_episode))
             torch.save(model.state_dict(),
                        "{}/ppo_super_mario_bros_{}_{}".format("/content/drive/My Drive/Mario Trained Models (With GAE)", opt.world, opt.stage))
             torch.save(model.state_dict(),

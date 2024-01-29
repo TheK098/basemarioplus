@@ -24,6 +24,7 @@ def eval(opt, global_model, num_states, num_actions):
     elif opt.action_type=="complex":
         actions = COMPLEX_MOVEMENT
     else:
+        print("speedrrun check process.py")
         actions = SPEEDRUN_MOVEMENT
     env = create_train_env(opt.world, opt.stage, actions)
     local_model = PPO(num_states, num_actions)
