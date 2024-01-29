@@ -7,6 +7,8 @@ import cv2
 import numpy as np
 import subprocess as sp
 import torch.multiprocessing as mp
+import matplotlib.pyplot as plt
+
 
 SPEEDRUN_MOVEMENT = [
     ['NOOP'],
@@ -75,11 +77,12 @@ class CustomReward(Wrapper):
         
         # delete start
         if self.previous_state is not None and self.var==2:
-            self.eps+=1
-            total_difference = np.sum(np.abs(state - self.previous_state))
-            if total_difference>2600:
-                print("WAHOOO!   ", self.eps)
-                reward+=20
+            curr_state = state.reshape(84, 84)
+            prev_state = self.previous_state.reshape(84, 84)
+            total_difference = np.sum(np.abs(curr_state - prev_state))
+            if total_difference>2500:
+                print("WAHOO")
+                reward+=2000
         else:
             self.var+=1
             

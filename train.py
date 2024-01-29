@@ -158,10 +158,9 @@ def train(opt):
                 total_loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
                 optimizer.step()
-                
+        
                 
         if ((curr_episode % opt.save_interval == 0 and curr_episode > 0) or total_reward>highest_reward):
-            highest_reward=total_reward
             torch.save(model.state_dict(),
                        "{}/ppo_super_mario_bros_{}_{}".format("/content/drive/My Drive/Mario Trained Models (With GAE)", opt.world, opt.stage))
             torch.save(model.state_dict(),
@@ -173,6 +172,10 @@ def train(opt):
                 # Include other states here if necessary
             }
             torch.save(checkpoint, "{}/checkpoints/ppo_super_mario_bros_checkpoint_{}.pth".format(opt.saved_path, curr_episode))
+        
+        if(total_reward > highest_reward):
+            highest_reward = total_reward
+
         print("Episode: {}. Total reward: {}. Total loss: {}. Highest reward: {}".format(curr_episode, total_reward, total_loss.item(), highest_reward))
 
 
