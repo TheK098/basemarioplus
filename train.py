@@ -40,6 +40,7 @@ def get_args():
 
 
 def train(opt):
+    ignoreWarnings()
     if torch.cuda.is_available():
         torch.cuda.manual_seed(111)
     else:
