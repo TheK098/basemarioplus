@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import subprocess as sp
 import torch.multiprocessing as mp
+
 SPEEDRUN_MOVEMENT = [
     ['NOOP'],
     ['right'],

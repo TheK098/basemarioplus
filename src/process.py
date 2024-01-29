@@ -4,6 +4,8 @@ from src.model import PPO
 import torch.nn.functional as F
 from collections import deque
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT, COMPLEX_MOVEMENT, RIGHT_ONLY
+from util import ignoreWarnings
+
 SPEEDRUN_MOVEMENT = [
     ['NOOP'],
     ['right'],
@@ -16,6 +18,7 @@ SPEEDRUN_MOVEMENT = [
 ]
 
 def eval(opt, global_model, num_states, num_actions):
+    ignoreWarnings()
     torch.manual_seed(111)
     if opt.action_type == "right":
         actions = RIGHT_ONLY

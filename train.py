@@ -11,7 +11,7 @@ from torch.distributions import Categorical
 import torch.nn.functional as F
 import numpy as np
 import shutil
-import warnings
+from util import ignoreWarnings
 
 def get_args():
     parser = argparse.ArgumentParser(
@@ -81,19 +81,6 @@ def train(opt):
         curr_states = curr_states.cuda()
 
     while True:
-        if ((curr_episode % opt.save_interval == 0 and curr_episode > 0) or total_reward>highest_reward):
-            highest_reward=total_reward
-            torch.save(model.state_dict(),
-                       "{}/ppo_super_mario_bros_{}_{}".format("/content/drive/My Drive/Mario Trained Models (With GAE)", opt.world, opt.stage))
-            torch.save(model.state_dict(),
-                       "{}/ppo_super_mario_bros_{}_{}_{}".format("/content/drive/My Drive/Mario Trained Models (With GAE)", opt.world, opt.stage, curr_episode))
-            checkpoint = {
-                'episode': curr_episode,
-                'model_state_dict': model.state_dict(),
-                'optimizer_state_dict': optimizer.state_dict(),
-                # Include other states here if necessary
-            }
-            torch.save(checkpoint, "{}/checkpoints/ppo_super_mario_bros_checkpoint_{}.pth".format(opt.saved_path, curr_episode))
         total_reward =0
         curr_episode += 1
         old_log_policies = []
@@ -170,25 +157,25 @@ def train(opt):
                 total_loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
                 optimizer.step()
+                
+                
+        if ((curr_episode % opt.save_interval == 0 and curr_episode > 0) or total_reward>highest_reward):
+            highest_reward=total_reward
+            torch.save(model.state_dict(),
+                       "{}/ppo_super_mario_bros_{}_{}".format("/content/drive/My Drive/Mario Trained Models (With GAE)", opt.world, opt.stage))
+            torch.save(model.state_dict(),
+                       "{}/ppo_super_mario_bros_{}_{}_{}".format("/content/drive/My Drive/Mario Trained Models (With GAE)", opt.world, opt.stage, curr_episode))
+            checkpoint = {
+                'episode': curr_episode,
+                'model_state_dict': model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                # Include other states here if necessary
+            }
+            torch.save(checkpoint, "{}/checkpoints/ppo_super_mario_bros_checkpoint_{}.pth".format(opt.saved_path, curr_episode))
         print("Episode: {}. Total reward: {}. Total loss: {}. Highest reward: {}".format(curr_episode, total_reward, total_loss.item(), highest_reward))
 
 
 if __name__ == "__main__":
-    
-    
-    # Ignore specific deprecation warnings
-    warnings.filterwarnings("ignore", category=DeprecationWarning, 
-                            message=".*old step API which returns one bool instead of two.*")
-    warnings.filterwarnings("ignore", category=DeprecationWarning, 
-                            message=".*The argument mode in render method is deprecated.*")
-    warnings.filterwarnings("ignore", category=DeprecationWarning, 
-                            message=".*The torch.cuda.*DtypeTensor constructors are no longer recommended.*")
-
-    # Ignore user warnings
-    warnings.filterwarnings("ignore", category=UserWarning, 
-                            message=".*The environment SuperMarioBros-1-1-v0 is out of date.*")
-    warnings.filterwarnings("ignore", category=UserWarning, 
-                            message=".*No render modes was declared in the environment.*")
-    
+    ignoreWarnings()
     opt = get_args()
     train(opt)
