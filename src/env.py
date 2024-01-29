@@ -53,7 +53,7 @@ class CustomReward(Wrapper):
         self.stage = stage
         # delete later
         self.previous_state = None
-        self.var = 0
+        self.var=0
         self.eps=0
         
         if monitor:
@@ -85,13 +85,16 @@ class CustomReward(Wrapper):
                 reward+=3000
         else:
             self.var+=1
-            
+
         self.previous_state= state.copy()
         # delete end
         
         reward += (info["score"] - self.curr_score) / 40.
         self.curr_score = info["score"]
         if done:
+            self.previous_state = None
+            self.var=0
+            self.eps=0
             if info["flag_get"]:
                 reward += 50
             else:
@@ -118,6 +121,9 @@ class CustomReward(Wrapper):
     def reset(self):
         self.curr_score = 0
         self.current_x = 40
+        self.previous_state = None
+        self.var=0
+        self.eps=0
         return process_frame(self.env.reset())
 
 
