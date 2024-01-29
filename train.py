@@ -33,7 +33,7 @@ def get_args():
     parser.add_argument("--max_actions", type=int, default=200, help="Maximum repetition steps in test phase")
     parser.add_argument("--log_path", type=str, default="/content/sup/tensorboard/ppo_super_mario_bros")
     parser.add_argument("--saved_path", type=str, default="/content/drive/My Drive/Mario Trained Models (With GAE)")
-    parser.add_argument("--checkpoint", type=str, default="/content/drive/My Drive/Mario Trained Models (With GAE)/checkpoints/ppo_super_mario_bros_checkpoint_155.pth", help="Path to a saved checkpoint (optional)")
+    parser.add_argument("--checkpoint", type=str, default="/content/drive/My Drive/Mario Trained Models (With GAE)/checkpoints/ppo_super_mario_bros_checkpoint_40.pth", help="Path to a saved checkpoint (optional)")
 
     args = parser.parse_args()
     return args
@@ -57,7 +57,7 @@ def train(opt):
     model.share_memory()
     
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
-    
+    total_reward=0
     curr_episode=0
     highest_reward = 0
     if opt.checkpoint:
