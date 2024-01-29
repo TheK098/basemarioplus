@@ -4,16 +4,27 @@ from src.model import PPO
 import torch.nn.functional as F
 from collections import deque
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT, COMPLEX_MOVEMENT, RIGHT_ONLY
-
+SPEEDRUN_MOVEMENT = [
+    ['NOOP'],
+    ['right'],
+    ['right', 'A'],
+    ['right', 'B'],
+    ['right', 'A', 'B'],
+    ['A'],
+    ['left'],
+    ['down']
+]
 
 def eval(opt, global_model, num_states, num_actions):
-    torch.manual_seed(123)
+    torch.manual_seed(111)
     if opt.action_type == "right":
         actions = RIGHT_ONLY
     elif opt.action_type == "simple":
         actions = SIMPLE_MOVEMENT
-    else:
+    elif opt.action_type=="complex":
         actions = COMPLEX_MOVEMENT
+    else:
+        actions = SPEEDRUN_MOVEMENT
     env = create_train_env(opt.world, opt.stage, actions)
     local_model = PPO(num_states, num_actions)
     if torch.cuda.is_available():

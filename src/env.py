@@ -7,7 +7,16 @@ import cv2
 import numpy as np
 import subprocess as sp
 import torch.multiprocessing as mp
-
+SPEEDRUN_MOVEMENT = [
+    ['NOOP'],
+    ['right'],
+    ['right', 'A'],
+    ['right', 'B'],
+    ['right', 'A', 'B'],
+    ['A'],
+    ['left'],
+    ['down']
+]
 
 class Monitor:
     def __init__(self, width, height, saved_path):
@@ -130,8 +139,10 @@ class MultipleEnvironments:
             actions = RIGHT_ONLY
         elif action_type == "simple":
             actions = SIMPLE_MOVEMENT
-        else:
+        elif action_type == "complex":
             actions = COMPLEX_MOVEMENT
+        else:
+            actions = SPEEDRUN_MOVEMENT
         self.envs = [create_train_env(world, stage, actions, output_path=output_path) for _ in range(num_envs)]
         self.num_states = self.envs[0].observation_space.shape[0]
         self.num_actions = len(actions)
