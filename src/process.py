@@ -53,7 +53,7 @@ def eval(opt, global_model, num_states, num_actions):
         if info["flag_get"]:
             print("Finished")
             torch.save(local_model.state_dict(),
-                       "{}/ppo_super_mario_bros_{}_{}_{}".format(opt.saved_path, opt.world, opt.stage, curr_step))
+                       "{}/ppo_super_mario_bros_{}_{}_{}".format(opt.saved_path, opt.world, opt.stage, (curr_step+1000)))
 
         actions.append(action)
         if curr_step > opt.num_global_steps or actions.count(actions[0]) == actions.maxlen:
