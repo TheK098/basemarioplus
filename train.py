@@ -162,8 +162,6 @@ def train(opt):
                 
         if ((curr_episode % opt.save_interval == 0 and curr_episode > 0) or total_reward>highest_reward):
             torch.save(model.state_dict(),
-                       "{}/ppo_super_mario_bros_{}_{}".format("/content/drive/My Drive/Mario Trained Models (With GAE)", opt.world, opt.stage))
-            torch.save(model.state_dict(),
                        "{}/ppo_super_mario_bros_{}_{}_{}".format("/content/drive/My Drive/Mario Trained Models (With GAE)", opt.world, opt.stage, curr_episode))
             checkpoint = {
                 'episode': curr_episode,
