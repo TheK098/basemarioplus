@@ -121,7 +121,7 @@ class CustomReward(Wrapper):
                 reward +=3000
                 print("WAHOOOOO!")
                 
-            if underbridge and topTrap:
+            if underbridge or topTrap:
                 reward -= 100
                 done = True
             if goforpipe:
