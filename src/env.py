@@ -59,6 +59,7 @@ class CustomReward(Wrapper):
         # self.var=0
         # self.eps=0
         self.reachTop=0
+        self.nearTop = 0
         
         if monitor:
             self.monitor = monitor
@@ -113,15 +114,20 @@ class CustomReward(Wrapper):
         if self.world == 1 and self.stage == 2:
             underbridge = (2320<=x<=2410 and y <= 115)
             goforpipe = (2560 <= x <=2700 and y <= 190)
-            reachTop = (2574 <= x <= 2590 and y>=220)
+            reachTop = (2574 <= x <= 2590 and y>=250)
             topTrap = (923 <= x <= 978 and y>=140)
+            nearTop = (2540 <= x and y >= 269)
             
+            if nearTop and self.nearTop == 0:
+                self.nearTop+=1
+                reward+=300
             if reachTop and self.reachTop == 0:
                 self.reachTop+=1
                 reward +=3000
                 print("WAHOOOOO!")
                 
             if underbridge or topTrap:
+                print("what the fuck")
                 reward -= 100
                 done = True
             if goforpipe:
@@ -155,6 +161,7 @@ class CustomReward(Wrapper):
         # self.previous_state = None
         # self.var=0
         # self.eps=0
+        self.nearTop = 0
         self.reachTop=0
         return process_frame(self.env.reset())
 
