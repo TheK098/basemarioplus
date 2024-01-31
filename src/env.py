@@ -9,7 +9,7 @@ import subprocess as sp
 import torch.multiprocessing as mp
 import matplotlib.pyplot as plt
 
-
+# added left + jump
 SPEEDRUN_MOVEMENT = [
     ['NOOP'],
     ['right'],
@@ -18,6 +18,9 @@ SPEEDRUN_MOVEMENT = [
     ['right', 'A', 'B'],
     ['A'],
     ['left'],
+    ['left', 'A'],
+    ['left', 'B'],
+    ['left', 'A', 'B'],
     ['down']
 ]
 
@@ -52,9 +55,9 @@ class CustomReward(Wrapper):
         self.world = world
         self.stage = stage
         # delete later
-        self.previous_state = None
-        self.var=0
-        self.eps=0
+        # self.previous_state = None
+        # self.var=0
+        # self.eps=0
         
         if monitor:
             self.monitor = monitor
@@ -63,38 +66,38 @@ class CustomReward(Wrapper):
 
     def step(self, action):
         # delete start
-        if (self.previous_state is None) and self.var==0:
-            self.eps+=1
-            self.previous_state = self.env.render(mode='rgb_array')
-            self.previous_state = process_frame(self.previous_state)
-            self.var+=1        
+        # if (self.previous_state is None) and self.var==0:
+        #     self.eps+=1
+        #     self.previous_state = self.env.render(mode='rgb_array')
+        #     self.previous_state = process_frame(self.previous_state)
+        #     self.var+=1        
         # delete end
         
         state, reward, done, info = self.env.step(action)
-        if self.monitor:
-            self.monitor.record(state)
+        # if self.monitor:
+        #     self.monitor.record(state)
         state = process_frame(state)
         
-        # delete start
-        if self.previous_state is not None and self.var==2:
-            curr_state = state.reshape(84, 84)
-            prev_state = self.previous_state.reshape(84, 84)
-            total_difference = np.sum(np.abs(curr_state - prev_state))
-            if total_difference>2500:
-                print("WAHOO")
-                reward+=3000
-        else:
-            self.var+=1
+        # # delete start
+        # if self.previous_state is not None and self.var==2:
+        #     curr_state = state.reshape(84, 84)
+        #     prev_state = self.previous_state.reshape(84, 84)
+        #     total_difference = np.sum(np.abs(curr_state - prev_state))
+        #     if total_difference>2500:
+        #         print("WAHOO")
+        #         reward+=3000
+        # else:
+        #     self.var+=1
 
-        self.previous_state= state.copy()
-        # delete end
+        # self.previous_state= state.copy()
+        # # delete end
         
         reward += (info["score"] - self.curr_score) / 40.
         self.curr_score = info["score"]
         if done:
-            self.previous_state = None
-            self.var=0
-            self.eps=0
+            # self.previous_state = None
+            # self.var=0
+            # self.eps=0
             if info["flag_get"]:
                 reward += 50
             else:
@@ -121,9 +124,9 @@ class CustomReward(Wrapper):
     def reset(self):
         self.curr_score = 0
         self.current_x = 40
-        self.previous_state = None
-        self.var=0
-        self.eps=0
+        # self.previous_state = None
+        # self.var=0
+        # self.eps=0
         return process_frame(self.env.reset())
 
 

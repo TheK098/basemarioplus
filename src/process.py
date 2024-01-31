@@ -14,6 +14,9 @@ SPEEDRUN_MOVEMENT = [
     ['right', 'A', 'B'],
     ['A'],
     ['left'],
+    ['left', 'A'],
+    ['left', 'B'],
+    ['left', 'A', 'B'],
     ['down']
 ]
 
