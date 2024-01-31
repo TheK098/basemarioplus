@@ -114,13 +114,14 @@ class CustomReward(Wrapper):
             underbridge = (2320<=x<=2410 and y <= 115)
             goforpipe = (2560 <= x <=2700 and y <= 190)
             reachTop = (2574 <= x <= 2590 and y>=220)
+            topTrap = (923 <= x <= 978 and y>=140)
             
             if reachTop and self.reachTop == 0:
                 self.reachTop+=1
                 reward +=3000
                 print("WAHOOOOO!")
                 
-            if underbridge:
+            if underbridge and topTrap:
                 reward -= 100
                 done = True
             if goforpipe:
