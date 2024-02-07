@@ -128,7 +128,7 @@ class CustomReward(Wrapper):
                 
             if underbridge or topTrap:
                 print("what the fuck")
-                reward -= 100
+                reward -= 300
                 done = True
             if goforpipe:
                 reward -=300
@@ -238,3 +238,4 @@ class MultipleEnvironments:
                 self.env_conns[index].send(self.envs[index].reset())
             else:
                 raise NotImplementedError
+ 
