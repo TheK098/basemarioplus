@@ -58,8 +58,10 @@ class CustomReward(Wrapper):
         # self.previous_state = None
         # self.var=0
         # self.eps=0
-        self.reachTop=0
-        self.nearTop = 0
+        # self.reachTop=0
+        # self.nearTop = 0
+        self.jumpedHole = 0
+        self.hitPipe=0        
         
         if monitor:
             self.monitor = monitor
@@ -97,13 +99,15 @@ class CustomReward(Wrapper):
         reward += (info["score"] - self.curr_score) / 40.
         self.curr_score = info["score"]
         if done:
+            self.jumpedHole = 0
+            self.hitPipe=0       
             # self.previous_state = None
             # self.var=0
             # self.eps=0
             if info["flag_get"]:
-                reward += 50
+                reward += 100
             else:
-                reward -= 50
+                reward -= 100
                 
                 
                 
@@ -133,8 +137,16 @@ class CustomReward(Wrapper):
             if goforpipe:
                 reward -=300
                 done = True
-                    
                 
+        if self.world == 8 and self.stage == 1:
+            jumpedOverHole = (3636<=x<=3693)
+            hitSecondPipe = (3862<=x<=3867 and y==143)
+            if(jumpedOverHole and self.jumpedHole<=1):
+                self.jumpedHole +=1
+                reward+=1000
+            if(hitSecondPipe and self.hitPipe==0):
+                self.hitPipe +=1
+                reward+=6000
                 
         if self.world == 7 and self.stage == 4:
             if (506 <= info["x_pos"] <= 832 and info["y_pos"] > 127) or (
@@ -161,8 +173,10 @@ class CustomReward(Wrapper):
         # self.previous_state = None
         # self.var=0
         # self.eps=0
-        self.nearTop = 0
-        self.reachTop=0
+        # self.nearTop = 0
+        # self.reachTop=0
+        self.jumpedHole = 0
+        self.hitPipe=0       
         return process_frame(self.env.reset())
 
 
