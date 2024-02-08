@@ -145,14 +145,14 @@ class CustomReward(Wrapper):
 
 
         if self.world == 8 and self.stage == 2:
-            led1 = (2314<=x<=2330 and y==79)
+            led1 = (2461<=x<=2482 and y>=79)
             led2 = (2344<=x<=2361 and y==79)
             if(led1 and self.ledge1 <= 1):
                 self.ledge1+=1
-                reward += 400
+                reward += 800
             if(led2 and self.ledge2 <=1):
                 self.ledge2+=1
-                reward += 800
+                reward += 400
                 
         if self.world == 8 and self.stage == 1:
             jumpedOverHole = (3636<=x<=3693)
