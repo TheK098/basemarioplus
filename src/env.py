@@ -64,6 +64,7 @@ class CustomReward(Wrapper):
         self.hitPipe=0
         self.ledge1=0
         self.ledge2=0        
+        self.pipe3=0
         
         if monitor:
             self.monitor = monitor
@@ -105,6 +106,7 @@ class CustomReward(Wrapper):
             self.hitPipe=0
             self.ledge1=0
             self.ledge2=0        
+            self.pipe3=0
             # self.previous_state = None
             # self.var=0
             # self.eps=0
@@ -145,14 +147,18 @@ class CustomReward(Wrapper):
 
 
         if self.world == 8 and self.stage == 2:
-            led1 = (2461<=x<=2482 and y>=79)
-            led2 = (2344<=x<=2361 and y==79)
-            if(led1 and self.ledge1 <= 1):
+            led1 = (2323<=x<=2327 and y==79)
+            led2 = (2450<=x<=2454 and y==79)
+            pipe3 = (2487 <=x<2490 and y==143)
+            if(led1 and self.ledge1 < 1):
                 self.ledge1+=1
                 reward += 800
-            if(led2 and self.ledge2 <=1):
+            if(led2 and self.ledge2 < 1):
                 self.ledge2+=1
-                reward += 400
+                reward += 800
+            if(pipe3 and self.pipe3<1):
+                self.pipe3+=1
+                reward += 800
                 
         if self.world == 8 and self.stage == 1:
             jumpedOverHole = (3636<=x<=3693)
@@ -195,6 +201,7 @@ class CustomReward(Wrapper):
         self.hitPipe=0
         self.ledge1=0
         self.ledge2=0        
+        self.pipe3=0
         return process_frame(self.env.reset())
 
 
